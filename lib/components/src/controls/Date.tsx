@@ -36,7 +36,7 @@ const formatTime = (value: Date | number) => {
   return `${hours}:${minutes}`;
 };
 
-const FlexSpaced = styled.div({
+const FlexSpaced = styled.div(({ theme }) => ({
   flex: 1,
   display: 'flex',
 
@@ -48,15 +48,16 @@ const FlexSpaced = styled.div({
     '&::-webkit-calendar-picker-indicator': {
       opacity: 0.5,
       height: 12,
+      filter: theme.base === 'light' ? undefined : 'invert(1)',
     },
   },
   'input:first-of-type': {
     marginLeft: 0,
   },
-});
+}));
 
 export type DateProps = ControlProps<DateValue> & DateConfig;
-export const DateControl: FC<DateProps> = ({ name, value, onChange }) => {
+export const DateControl: FC<DateProps> = ({ name, value, onChange, onFocus, onBlur }) => {
   const [valid, setValid] = useState(true);
   const dateRef = useRef<HTMLInputElement>();
   const timeRef = useRef<HTMLInputElement>();
@@ -101,6 +102,7 @@ export const DateControl: FC<DateProps> = ({ name, value, onChange }) => {
         id={`${name}date`}
         name={`${name}date`}
         onChange={onDateChange}
+        {...{ onFocus, onBlur }}
       />
       <Form.Input
         type="time"
@@ -108,6 +110,7 @@ export const DateControl: FC<DateProps> = ({ name, value, onChange }) => {
         name={`${name}time`}
         ref={timeRef as RefObject<HTMLInputElement>}
         onChange={onTimeChange}
+        {...{ onFocus, onBlur }}
       />
       {!valid ? <div>invalid</div> : null}
     </FlexSpaced>
